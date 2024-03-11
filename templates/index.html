@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Image Classifier</h1>
+        <form method="post" enctype="multipart/form-data">
+            <label for="file1">Upload Image 1:</label>
+            <input type="file" name="file1" id="file1" accept=".jpg, .jpeg, .png, .webp" required>
+            
+            <label for="file2">Upload Image 2:</label>
+            <input type="file" name="file2" id="file2" accept=".jpg, .jpeg, .png, .webp" required>
+            
+            <br>
+            <button type="submit">Classify Images</button>
+        </form>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        {% if results %}
+            <h2>Results:</h2>
+            <ul>
+                {% for result in results %}
+                    <li>{{ result.image_name }} - Predicted Label: {{ result.prediction }}</li>
+                {% endfor %}
+                {% if results|length > 2 %}
+                    <li>Distance between the two photos: {{ results[2].distance }} meters</li>
+                    <li class="{% if results[2].distance >= 103 %}different-field{% else %}same-field{% endif %}">
+                        {% if results[2].distance >= 103 %}
+                            Different Field
+                        {% else %}
+                            Same Field
+                        {% endif %}
+                    </li>
+                {% endif %}
+            </ul>
+        {% endif %}
+    </div>
+</body>
+</html>
