@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+</head>
+<body>
+    <h1>Result</h1>
+    <p>Welcome, {{ current_user.username }}!</p>
+    <h2>Crop Health Analysis</h2>
+    <form method="post" enctype="multipart/form-data" action="{{ url_for('result') }}">
+        <label for="cropImage">Upload Image of Crop:</label>
+        <input type="file" name="cropImage" id="cropImage" accept=".jpg, .jpeg, .png, .webp" required>
+        <button type="submit">Analyze</button>
+    </form>
+
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
+    {% if is_healthy is defined and is_within_distance is defined %}
+    {% if is_healthy %}
+        <p>The crop is healthy, so you are not eligible for an insurance claim.</p>
+    {% else %}
+        {% if is_within_distance %}
+            <p>The crop has a disease, and it is within 103 meters from the original location ({{ distance }} meters). You are eligible for an insurance claim.</p>
+        {% else %}
+            <p>The crop has a disease, but it is not within 103 meters from the original location ({{ distance }} meters). You are not eligible for an insurance claim.</p>
+        {% endif %}
+    {% endif %}
+    {% endif %}
+
+    {% if current_user.is_authenticated %}
+        <form action="{{ url_for('logout') }}" method="post">
+            <button type="submit">Logout</button>
+        </form>
+    {% endif %}
+</body>
+</html>

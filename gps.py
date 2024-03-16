@@ -32,7 +32,7 @@ def exif_to_tag(exif_dict):
 
 
 def main():
-    filename = r"C:\Users\mpawa\Desktop\IMG_20240302_133403.jpg"  # obviously one of your own pictures
+    filename = r"D:\code\minor\wheat-disease-detection\testCDD\a.jpg"  # obviously one of your own pictures
     im = Image.open(filename)
 
     exif_data = im.info.get('exif')
