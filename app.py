@@ -126,7 +126,6 @@ def result():
             else:
                 current_user.eligible_for_insurance = False
                 current_user.save()
-            print("JHKHK")
             return render_template('result.html', is_healthy=is_healthy, is_within_distance=is_within_distance, distance=distance)
         else:
             return render_template('result.html', error='GPS metadata not found in the uploaded image.')
