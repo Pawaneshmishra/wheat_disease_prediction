@@ -28,6 +28,7 @@ class User(db.Document, UserMixin):
     latitude = db.FloatField()
     longitude = db.FloatField()
     eligible_for_insurance = db.BooleanField(default=False)
+    role = db.StringField(default='USER')
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -36,6 +37,17 @@ def load_user(user_id):
 @app.route('/')
 def home():
     return render_template('login.html')
+
+@app.route('/admin')
+@login_required
+def admin():
+    if current_user.role != 'ADMIN':
+        return redirect(url_for('home'))  # Redirect unauthorized users to the homepage
+
+    # Query all users from the database
+    users = User.objects.all()
+
+    return render_template('admin.html', users=users)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -131,11 +143,18 @@ def result():
             return render_template('result.html', error='GPS metadata not found in the uploaded image.')
     return render_template('result.html', error='Please upload an image.')
 
-@app.route('/claim_insurance', methods=['POST'])
+@app.route('/claim_insurance', methods=['GET','POST'])
 @login_required
 def claim_insurance():
     # Logic for insurance claim processing
-    return redirect(url_for('result'))
+    if current_user.eligible_for_insurance:
+        # Logic for insurance claim processing
+        # Redirect to the appropriate page after processing the claim
+        flash('Insurance claim processed successfully!')
+        return redirect(url_for('claim_insurance'))  # Redirect to the homepage or any other page
+    else:
+        flash('You are not eligible for insurance.')
+        return redirect(url_for('claim_insurance'))  # Redirect to the result page
 
 
 if __name__ == '__main__':
