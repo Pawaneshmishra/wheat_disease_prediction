@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Claim</title>
+</head>
+<body>
+    <h1>Insurance Claim</h1>
+
+    <h2>Insurance Settings</h2>
+    <p>Insurance Amount: Rupees {{ insurance_settings.insurance_amount }} per 100 Kg</p>
+
+    <h2>Application Status</h2>
+    {% if current_user.applied_for_insurance %}
+        <p>You have applied for insurance.</p>
+    {% else %}
+        <p>You have not applied for insurance yet.</p>
+    {% endif %}
+
+    {% if current_user.eligible_for_insurance and not current_user.applied_for_insurance %}
+        <form method="post" action="{{ url_for('insurance_claim') }}">
+            <button type="submit">Apply for Insurance</button>
+        </form>
+    {% elif not current_user.eligible_for_insurance %}
+        <p>You are not eligible for insurance.</p>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+</head>
+<body>
+    <h1>Admin Panel</h1>
+    <ul>
+        {% for user in users %}
+            {% if user.applied_for_insurance %}
+                <li>{{ user.username }} - 
+                    {% if user.insurance_approved %}
+                        Insurance Approved
+                    {% else %}
+                        <a href="{{ url_for('approve_insurance', user_id=user.id) }}">Approve Insurance</a>
+                    {% endif %}
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('result') }}"><button>Back to Admin Home Page</button></a>
+</body>
+</html>

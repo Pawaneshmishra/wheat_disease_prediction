@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approve Insurance Claim</title>
+</head>
+<body>
+    <h1>Approve Insurance Claim</h1>
+    <h2>Claim Details</h2>
+    <p>Name: {{ claim.name }}</p>
+    <p>Phone: {{ claim.phone }}</p>
+    <p>Address: {{ claim.address }}</p>
+    <p>Amount Insured per Quintal: {{ claim.amount_insured_per_quintal }}</p>
+    
+    <form method="post">
+        <button type="submit">Approve Claim</button>
+    </form>
+
+    <!-- Button to go back to the admin dashboard -->
+    <a href="{{ url_for('admin_dashboard') }}"><button>Back to Admin Dashboard</button></a>
+</body>
+</html>

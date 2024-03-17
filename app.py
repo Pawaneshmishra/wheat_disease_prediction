@@ -10,6 +10,7 @@ from tensorflow.keras.models import load_model
 from json import JSONEncoder
 import cv2
 import numpy as np
+from mongoengine import Document, fields
 
 app = Flask(__name__)
 app.config['MONGODB_SETTINGS'] = {
@@ -21,6 +22,10 @@ db = MongoEngine(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
+# Define the InsuranceSettings model
+class InsuranceSettings(db.Document):
+    insurance_amount = db.DecimalField(required=True)
+
 class User(db.Document, UserMixin):
     username = db.StringField(max_length=50, unique=True, required=True)
     email = db.EmailField(unique=True, required=True)
@@ -29,6 +34,16 @@ class User(db.Document, UserMixin):
     longitude = db.FloatField()
     eligible_for_insurance = db.BooleanField(default=False)
     role = db.StringField(default='USER')
+    insurance_approved = db.BooleanField(default=False)
+    applied_for_insurance = db.BooleanField(default=False)
+
+class InsuranceClaim(Document):
+    user_id = fields.ReferenceField(User, required=True)
+    name = fields.StringField(required=True)
+    phone = fields.StringField(required=True)
+    address = fields.StringField(required=True)
+    amount_insured_per_quintal = fields.DecimalField(required=True)
+    is_approved = fields.BooleanField(default=False)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -162,18 +177,74 @@ def result():
             return render_template('result.html', error='GPS metadata not found in the uploaded image.')
     return render_template('result.html', error='Please upload an image.')
 
-@app.route('/claim_insurance', methods=['GET','POST'])
+
+@app.route('/admin/insurance_amount', methods=['GET', 'POST'])
 @login_required
-def claim_insurance():
-    # Logic for insurance claim processing
-    if current_user.eligible_for_insurance:
-        # Logic for insurance claim processing
-        # Redirect to the appropriate page after processing the claim
-        flash('Insurance claim processed successfully!')
-        return redirect(url_for('claim_insurance'))  # Redirect to the homepage or any other page
+def insurance_amount():
+    if current_user.role != 'ADMIN':
+        return redirect(url_for('home'))  # Redirect unauthorized users to the homepage
+
+    # Logic for handling the insurance amount decision form submission
+    if request.method == 'POST':
+        # Process form submission
+        insurance_amount_value = request.form.get('insurance_amount')
+
+        # Check if the InsuranceSettings document exists, if not, create it
+        settings = InsuranceSettings.objects.first()
+        if not settings:
+            settings = InsuranceSettings()
+
+        # Update the insurance amount and save it to the database
+        settings.insurance_amount = insurance_amount_value
+        settings.save()
+
+        flash('Insurance amount decision saved successfully!')
+
+    # Fetch the current insurance amount from the database
+    current_insurance_amount = InsuranceSettings.objects.first().insurance_amount if InsuranceSettings.objects.first() else None
+
+    return render_template('insurance_amount.html', current_insurance_amount=current_insurance_amount)
+
+# Route for insurance claim page
+@app.route('/insurance_claim', methods=['GET', 'POST'])
+@login_required
+def insurance_claim():
+    insurance_settings = InsuranceSettings.objects.first()
+    if request.method == 'POST':
+        if current_user.role == 'ADMIN':
+            flash('Admins cannot apply for insurance.')
+            return redirect(url_for('index'))
+
+        # User is applying for insurance
+        current_user.applied_for_insurance = True
+        current_user.save()
+        flash('Your insurance application has been submitted for review.')
+        return redirect(url_for('result'))
+
+    # GET request - Display insurance application form for users
+    if current_user.role == 'ADMIN':
+        # Admins see a list of insurance applications
+        users = User.objects(applied_for_insurance=True)
+        return render_template('admin_panel.html', users=users, is_admin=True)
     else:
-        flash('You are not eligible for insurance.')
-        return redirect(url_for('claim_insurance'))  # Redirect to the result page
+        # Users see a form to apply for insurance
+        return render_template('insurance_claim.html', is_admin=False, insurance_settings=insurance_settings)
+
+# Insurance Approval Route (for admins)
+@app.route('/approve_insurance/<user_id>')
+@login_required
+def approve_insurance(user_id):
+    if current_user.role == 'ADMIN':
+        user = User.objects(id=user_id).first()
+        if user:
+            user.insurance_approved = True
+            user.save()
+            flash('Insurance request approved successfully for user {}.'.format(user.username))
+        else:
+            flash('User not found.')
+    else:
+        flash('You do not have permission to approve insurance requests.')
+    return redirect(url_for('insurance_claim'))
 
 
 if __name__ == '__main__':

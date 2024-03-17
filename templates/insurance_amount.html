@@ -12,5 +12,12 @@
         <input type="number" id="insurance_amount" name="insurance_amount" required>
         <button type="submit">Save</button>
     </form>
+
+    <a href="{{ url_for('result') }}"><button>Back to Admin Home Page</button></a>
+    {% if current_user.is_authenticated %}
+        <form action="{{ url_for('logout') }}" method="post">
+            <button type="submit">Logout</button>
+        </form>
+    {% endif %}
 </body>
 </html>

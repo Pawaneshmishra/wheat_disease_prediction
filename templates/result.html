@@ -32,10 +32,11 @@
     {% endif %}
 
     {% if current_user.is_authenticated %}
-            <form action="{{ url_for('claim_insurance') }}" method="post">
-                <button type="submit">Claim Insurance</button>
-            </form>
+    <form action="{{ url_for('insurance_claim') }}" method="get">
+        <button type="submit">Claim Insurance</button>
+    </form>
     {% endif %}
+
 
     {% if current_user.is_authenticated %}
         <form action="{{ url_for('logout') }}" method="post">
