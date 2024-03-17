@@ -117,13 +117,23 @@ def result():
             resized_image = cv2.resize(image, (img_size, img_size))
             resized_image = resized_image / 255.0
             resized_image = np.expand_dims(resized_image, axis=0)
-
+            
             # Predict disease using the loaded model
             prediction = model.predict(resized_image)
             # Perform analysis based on the prediction
-            rounded_prediction = np.round(prediction).astype(int)
-            print(rounded_prediction)
-            is_healthy = rounded_prediction[0][1] == 0  # Check if the prediction indicates the crop is healthy
+            
+            # rounded_prediction = np.round(prediction).astype(int)
+            label_mapping = {
+                (0, 0, 1, 0): "Crown root rot",
+                (0, 0, 0, 1): "Healthy",
+                (1, 0, 0, 0): "Leaf rust",
+                (0, 1, 0, 0): "Loose smut"
+            }
+            rounded_prediction = tuple(np.round(prediction).flatten().astype(int))
+            label = label_mapping.get(rounded_prediction, "Unknown")
+            # print(label)
+            # print(rounded_prediction)
+            is_healthy = label == 'Healthy'  # Check if the prediction indicates the crop is healthy
 
             # Check distance from the original location during user registration
             user_location = (current_user.latitude, current_user.longitude)
