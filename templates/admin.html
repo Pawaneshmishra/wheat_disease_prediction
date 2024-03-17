@@ -3,31 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Page</title>
+    <title>Admin Portal</title>
 </head>
 <body>
-    <h1>Admin Page</h1>
-    <h2>User Details</h2>
-    <table border="1">
-        <tr>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Latitude</th>
-            <th>Longitude</th>
-            <th>Insurance Eligible</th>
-            <th>Role</th>
-        </tr>
-        {% for user in users %}
-        <tr>
-            <td>{{ user.username }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.latitude }}</td>
-            <td>{{ user.longitude }}</td>
-            <td>{{ user.eligible_for_insurance }}</td>
-            <td>{{ user.role}}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <h1>Admin Portal</h1>
+    <ul>
+        <li><a href="{{ url_for('details') }}">View User Details</a></li>
+        <!-- Add more navigation links/buttons as needed -->
+    </ul>
 
     {% if current_user.is_authenticated %}
         <form action="{{ url_for('logout') }}" method="post">

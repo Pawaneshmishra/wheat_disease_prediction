@@ -44,10 +44,18 @@ def admin():
     if current_user.role != 'ADMIN':
         return redirect(url_for('home'))  # Redirect unauthorized users to the homepage
 
+    return render_template('admin.html')
+
+@app.route('/details')
+@login_required
+def details():
+    if current_user.role != 'ADMIN':
+        return redirect(url_for('home'))  # Redirect unauthorized users to the homepage
+
     # Query all users from the database
     users = User.objects.all()
 
-    return render_template('admin.html', users=users)
+    return render_template('user_details.html', users=users)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -93,8 +101,9 @@ img_size = 64
 @app.route('/result', methods=['GET', 'POST'])
 @login_required
 def result():
-    print("User's eligibility for insurance:", current_user.eligible_for_insurance)
-
+    if current_user.role == 'ADMIN':
+        return redirect(url_for('admin'))
+    
     if request.method == 'POST' and 'cropImage' in request.files:
         # Get the uploaded image
         crop_image = request.files['cropImage']
