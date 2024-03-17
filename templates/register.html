@@ -23,11 +23,19 @@
 
         <button type="submit">Register</button>
     </form>
+
+    <button id="backToLoginButton">Back to Login</button>
+
     <!-- Script to get latitude and longitude from the photo using HTML5 Geolocation API -->
     <script>
         navigator.geolocation.getCurrentPosition(function(position) {
             document.getElementById("latitude").value = position.coords.latitude;
             document.getElementById("longitude").value = position.coords.longitude;
+        });
+    </script>
+    <script>
+        document.getElementById('backToLoginButton').addEventListener('click', function() {
+            window.location.href = '{{ url_for('login') }}';
         });
     </script>
 </body>
