@@ -1,0 +1,44 @@
+/* CSS for Insurance Amount Decision page */
+
+/* Style for the heading */
+h1 {
+    color: #007bff;
+    text-align: center;
+}
+
+/* Style for the form */
+form {
+    margin: 0 auto;
+    width: 50%;
+    text-align: center;
+}
+
+/* Style for the input field */
+input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    box-sizing: border-box;
+}
+
+/* Style for the buttons */
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+}
+
+/* Style for the button on hover */
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Style for the button links */
+a button {
+    text-decoration: none;
+    color: white;
+}
