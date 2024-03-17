@@ -18,6 +18,10 @@
         <p>You have not applied for insurance yet.</p>
     {% endif %}
 
+    {% if current_user.insurance_approved %}
+        <p>Your insurance has been approved.</p>
+    {% endif %}
+
     {% if current_user.eligible_for_insurance and not current_user.applied_for_insurance %}
         <form method="post" action="{{ url_for('insurance_claim') }}">
             <button type="submit">Apply for Insurance</button>
