@@ -14,8 +14,8 @@ from mongoengine import Document, fields
 
 app = Flask(__name__)
 app.config['MONGODB_SETTINGS'] = {
-    'db': 'crop',
-    'host': 'mongodb+srv://admin:tejkabetichod@cluster0.6lymnfb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',
+    'db': '',
+    'host': '',
 }
 app.config['SECRET_KEY'] = 'mcbrbmc'
 db = MongoEngine(app)
