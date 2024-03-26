@@ -80,6 +80,10 @@ def register():
         email = request.form['email']
 
         # Get GPS coordinates using HTML5 Geolocation API
+        if request.form['latitude'] == '' or request.form['longitude'] == '':
+            print('user rejected location sharing')
+            return redirect(url_for('register'))
+        
         latitude, longitude = float(request.form['latitude']), float(request.form['longitude'])
 
 
