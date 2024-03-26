@@ -17,7 +17,7 @@ app.config['MONGODB_SETTINGS'] = {
     'db': '',
     'host': '',
 }
-app.config['SECRET_KEY'] = 'mcbrbmc'
+app.config['SECRET_KEY'] = ''
 db = MongoEngine(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
